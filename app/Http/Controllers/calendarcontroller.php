@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\light_notes;
 use App\users;
 use App\workoff;
 use App\workon;
@@ -15,45 +16,77 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\View;
 
 
-class clockcontroller extends Controller
+class calendarcontroller extends Controller
 {
-    public function index(Request $request)
+
+    public function index(){
+
+        //$query = light_notes::all();
+        //return view('light_notes/index',compact('query'));
+
+
+        $input = \Request::all();
+        //dd($input);
+
+        if($input["insert"] == "insert"){
+
+
+            DB::table('light_notes')
+                ->insert(array('u_id'=>1,'title' => $input["title"], 'content' => $input["content"], 'hap_time' => $input["hap_time"], 'created_at' => Carbon::now()));
+        }
+
+        //dd($input);
+
+        $query=DB::table('light_notes')
+            ->get();
+
+
+
+
+        return view('light_notes/index')->with('query',$query);
+
+
+
+
+    }
+    
+    public function content(){
+        $query=DB::table('light_notes')
+            ->get();
+        return View::make('light_notes/index')->with('query',$query);
+    }
+
+    public function add(){
+
+        return View::make('light_notes/create');
+    }
+
+
+
+
+
+    public function welcome(Request $request)
 
     {
+        $input = \Request::all();
+        //dd($input);
 
-
-
-            //dd($query);
-        $query_wf = DB::table('workoff')
-            ->where('u_id','=','1')
-            //->where('created_at','like',' 2016%')
+        $query_name=DB::table('members')
+            ->where('m_email', '=', $input['email'])
+            ->where('m_pwd','=',$input['pwd'])
+            ->select('m_name')
             ->get();
-        //dd($query_wf);
-        $query_wn = DB::table('workon') ->get();
-
-        $query_s = DB::table('workoff') ->get();
-        //$query_us =DB::table('workon') ->get('u_id');
-            //->whereBetween('created_at', ['2016-07-01', '2016-07-15 '])->get();
-        //$on_time=workon::find(1);
-        //echo $on_time->users->u_id;
+        //dd($query_name);
 
 
-        $query_wn = DB::table('workon')
-            ->where('u_id','=','1')
-            ->where('created_at','like','2016%')
-            //->where('action_typ','=','on')
-            //->take(10)
-            //->orderBy('id', 'desc')
-            ->get();
 
         $rs = array(
-            'workon' => $query_wn,
-            'workoff' => $query_wf,
-            'search' => $query_s,
+            'name' => $query_name,
+
         );
 
 
-        return view('clock/index')->with("rs",$rs);
+        return view('welcome')->with("rs",$rs);
         //, compact('query'))
 
 
@@ -63,104 +96,33 @@ class clockcontroller extends Controller
     }
     public function create()
     {
-        return view('clock/show');
+        return view('SignUp');
     }
 
     public function store(Request $request)
     {
         //dd($request);
 
+        //return view ('login');
 
         $input = \Request::all();
 
-         //dd($input);
-        $start_time=Carbon::today();
-        $end_time=Carbon::tomorrow();
-        //dd($end_time);
+        //dd($input);
 
 
 
-        $a= rand(8,9);
-        $b=rand(01,59);
-        $time=date("Y-m-d H:i:s",strtotime(date("Y-m-d")." $a:$b:$b"));
-        //dd($time);
+        if($input["join"] == "Join Now"){
 
 
-
-        if ($input["action_typ"] == "on") {
-
-            $query_wn = DB::table('workon')
-
-                ->where('u_id','=','1')
-                ->whereBetween('created_at',[$start_time,$end_time])
-                //->where('action_typ','=','on')
-                ->get();
-            //dd($query_wn);
-            //$value = str_limit('The PHP framework for web artisans.', 7);
-            //dd($query);
-
-
-
-
-            if( $query_wn == null )
-            {
-
-                //insert
-                //換句話說每次打卡時，都會先檢查是否已經存在了
-                DB::table('workon')
-                    ->insert(array('u_id' => 1, 'created_at' => Carbon::now()));
-                //dd($query);
-
-            }
-            else
-            {
-                //update
-                //check today on existed
-                DB::table('workon')
-                    ->where('u_id', 1)
-                    ->whereBetween('created_at',[$start_time,$end_time])
-                    //->where('action_typ','=','on')
-                    //->has('created_at')
-                    ->update(['created_at' => Carbon::now()]);
-                //dd($query_wn);
-
-            }
-
-
+            DB::table('members')
+                ->insert(array('m_name' => $input["name"], 'm_email' => $input["email"], 'm_pwd' => $input["pwd"], 'created_at' => Carbon::now()));
         }
-        else {
-            $query_wf = DB::table('workoff')
-                ->where('u_id','=','1')
-                ->whereBetween('created_at',[$start_time,$end_time])
-                //->where('action_typ','=','on')
-                ->first();
-            //dd($query_wf);
-            if ($query_wf == null) {
-                DB::table('workoff')
-                    ->insert(array('u_id' => 1, 'created_at' => Carbon::now()));
-            }
-
-            else{
-                DB::table('workoff')
-                    ->where('u_id', 1)
-                    ->whereBetween('created_at',[$start_time,$end_time])
-                    //->where('action_typ','=','on')
-                    //->has('created_at')
-                    ->update(['created_at' => Carbon::now()]);
-
-            }
-            }
 
 
-        //if($input["action_typ"] == "search"){
-        //$request->whereBetween('created_at', ['2016-07-01', '2016-07-15 '])->get();
-        //return view('clock/show');
-        //}
-        //clock::create();//$request->all()
 
-        //return Redirect::to('/clock/index');
 
-        return Redirect::to('/clock/index');
+
+        return View::make('login');
         //return view('clock/show');
 
         //return $request->all();
