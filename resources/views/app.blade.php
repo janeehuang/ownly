@@ -30,8 +30,8 @@
         <div class="navbar-header">
 
             <!-- Branding Image -->
-            <a class="navbar-brand" href="{{ url('ownly') }}">
-                Connact Us.
+            <a class="navbar-brand" href="{{ 'welcome' }}">
+                Belong Infinite.
             </a>
         </div>
 

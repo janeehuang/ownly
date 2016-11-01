@@ -54,6 +54,20 @@
             border-radius:4px;
         }
 
+        .content{
+            background:#ecf0f1;
+            border: #ccc 1px solid;
+            border-bottom: #ccc 2px solid;
+            padding: 8px;
+            width:250px;
+            color:#000000;
+            margin-top:10px;
+            font-size:1em;
+            border-radius:4px;
+            height: 100px;
+            text-align: justify;
+        }
+
         .password{
             border-radius:4px;
             background:#ecf0f1;
@@ -115,12 +129,17 @@
 
             <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
+            Level：<input name="level" type="radio" value="Red">Red
+
+            <input  name="level" type="radio" value="Yellow">Yellow
+
+            <input name="level" type="radio" value="Green">Green<br>
+
             <input id="datepicker1" type="text" name="hap_time" placeholder="yy-mm-dd" class="email"/>
 
             <input type="text" name="title" placeholder="title"  class="email" />
 
-
-            <textarea name="content" id="" cols="30" rows="10" class="email" placeholder="content"></textarea>
+            <input name="content" id="" cols="30" rows="10" class="content" placeholder="content">
 
             <input type="submit" value="insert" class="btn btn-primary" name="insert">
 

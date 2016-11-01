@@ -1,15 +1,3 @@
-@extends('app')
-@section('content')
-    <section class="container">
-        <form action="{{url('light_notes/'.$id)}}" method="post">
-            <input type="hidden" name="_token" value="{{ csrf_token() }}">
-            <input type="hidden" name="_method" value="PUT">
-            <input type="text" name="title" class="form-control" value="{{ $query->title  }}">
-            <textarea name="content" id="" cols="30" rows="10" class="form-control">{{$query->content}}</textarea>
-            <input type="submit" value="送出" class="btn btn-primary center-block">
-        </form>
-    </section>
-@stop
 
 <!DOCTYPE html>
 <!--[if lt IE 9]>
@@ -18,7 +6,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>jQuery UI 測試</title>
+    <title>Update</title>
     <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/themes/hot-sneaks/jquery-ui.css" rel="stylesheet">
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>
@@ -64,6 +52,19 @@
             margin-top:10px;
             font-size:1em;
             border-radius:4px;
+        }
+        .content{
+            background:#ecf0f1;
+            border: #ccc 1px solid;
+            border-bottom: #ccc 2px solid;
+            padding: 8px;
+            width:250px;
+            color:#000000;
+            margin-top:10px;
+            font-size:1em;
+            border-radius:4px;
+            height: 100px;
+            text-align: justify;
         }
 
         .password{
@@ -119,30 +120,28 @@
     </style>
 </head>
 <body>
-<form method="post" action="{{'index'}}">
+
     <div class="box">
-        <h1>Insert</h1>
+        <h1>Update</h1>
+        {{--dd($query['title'])--}}
 
-        <form action="{{url('light_notes/'.$query->id)}}" method="post">
-
-
+        <form method="post" action="{{url('light_notes/update')}}">
             <input type="hidden" name="_token" value="{{ csrf_token() }}">
+            <input type="hidden" name="id" value="{{ $id }}">
 
-            <input type="hidden" name="_method" value="PUT">
 
-            Level：<input name="level" type="radio" value="Red">Red
+            Level：<input name="level" type="radio" value="Red" @if( $level=="Red" ) checked="true" @endif>Red
+            <input  name="level" type="radio" value="Yellow" @if( $level=="Yellow" ) checked="true" @endif>Yellow
 
-            <input  name="level" type="radio" value="Yellow">Yellow
+            <input name="level" type="radio" value="Green"@if( $level=="Green" ) checked="true" @endif>Green<br>
 
-            <input name="level" type="radio" value="Green">Green<br>
+            <input id="datepicker1" type="text" name="hap_time" value="{{$hap_time }}" class="email"/>
 
-            <input id="datepicker1" type="text" name="hap_time" placeholder="yy-mm-dd" class="email" />
+            <input type="text" name="title" value="{{$title}}"  class="email" />
 
-            <input type="text" name="title" class="email" value="{{ $query->title}}"/>
+            <input name="content"   rows="10" class="content" value="{{$content}}" >
 
-            <textarea name="content" id="" cols="30" rows="10" class="email" value="{{ $query->content}}"></textarea>
-
-            <input type="submit" value="insert" class="btn btn-primary" name="insert">
+            <input type="submit" value="update" class="btn btn-primary" name="update">
 
 
 
@@ -164,5 +163,6 @@
                 $("#datepicker1").datepicker(opt);
             });
         </script>
+        </div>
 </body>
 </html>
